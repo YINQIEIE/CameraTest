@@ -31,22 +31,10 @@ public class MainActivity extends AppCompatActivity {
         setContentView(R.layout.activity_main);
 
         cameraId = getIntent().getIntExtra("Camera", 0);
-        TextView tv = findViewById(R.id.sample_text);
+        final TextView tv = findViewById(R.id.sample_text);
         tv.setText("cameraId = " + cameraId + "\n");
-        camera = Camera.open(1);
-        int numberOfCameras = Camera.getNumberOfCameras();
-        Camera.CameraInfo cameraInfo = new Camera.CameraInfo();
-        tv.append("orientation = " + cameraInfo.orientation + "\n");
-        for (int i = 0; i < numberOfCameras; i++) {
-            Camera.getCameraInfo(i, cameraInfo);
-            tv.append("id = " + i + "\n");
-        }
-        Camera.Parameters parameters = camera.getParameters();
-        List<Camera.Size> supportedPreviewSizes = parameters.getSupportedPreviewSizes();
-        for (int i = 0; i < supportedPreviewSizes.size(); i++) {
-            tv.append(supportedPreviewSizes.get(i).width + "x" + supportedPreviewSizes.get(i).height);
-            tv.append("\n");
-        }
+        camera = Camera.open();
+        showCameraInfo(tv);
         updateCameraOrientation();
 //        camera.setParameters(parameters);
         initSurfaceView();
@@ -56,6 +44,7 @@ public class MainActivity extends AppCompatActivity {
             public void onClick(View v) {
                 cameraId = cameraId == 0 ? 1 : 0;
                 openCamera();
+                showCameraInfo(tv);
             }
         });
 
@@ -64,6 +53,18 @@ public class MainActivity extends AppCompatActivity {
         int screenHeight = displayMetrics.heightPixels;
         tv.append(screenWidth + "x" + screenHeight);
 
+    }
+
+    private void showCameraInfo(TextView tv) {
+        tv.setText("cameraId = " + cameraId);
+        Camera.CameraInfo cameraInfo = new Camera.CameraInfo();
+        tv.append("orientation = " + cameraInfo.orientation + "\n");
+        Camera.Parameters parameters = camera.getParameters();
+        List<Camera.Size> supportedPreviewSizes = parameters.getSupportedPreviewSizes();
+        for (int i = 0; i < supportedPreviewSizes.size(); i++) {
+            tv.append(supportedPreviewSizes.get(i).width + "x" + supportedPreviewSizes.get(i).height);
+            tv.append("\n");
+        }
     }
 
     private void openCamera() {
