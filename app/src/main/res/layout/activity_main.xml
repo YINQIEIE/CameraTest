@@ -13,18 +13,20 @@
         android:visibility="visible"
         app:layout_constraintDimensionRatio="1:1" />
 
-    <TextView
-        android:id="@+id/sample_text"
-        android:layout_width="wrap_content"
-        android:layout_height="wrap_content"
-        android:textSize="16sp"
-        app:layout_constraintTop_toTopOf="parent" />
-
     <Button
         android:id="@+id/btnChange"
         android:layout_width="match_parent"
         android:layout_height="40dp"
         android:text="切换"
         app:layout_constraintBottom_toBottomOf="parent" />
+
+    <TextView
+        android:id="@+id/sample_text"
+        android:layout_width="wrap_content"
+        android:layout_height="0dp"
+        android:scrollbars="vertical"
+        android:textSize="16sp"
+        app:layout_constraintBottom_toTopOf="@+id/btnChange"
+        app:layout_constraintTop_toTopOf="parent" />
 
 </android.support.constraint.ConstraintLayout>

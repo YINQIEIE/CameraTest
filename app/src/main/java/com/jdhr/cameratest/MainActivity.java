@@ -3,6 +3,7 @@ package com.jdhr.cameratest;
 import android.hardware.Camera;
 import android.support.v7.app.AppCompatActivity;
 import android.os.Bundle;
+import android.text.method.ScrollingMovementMethod;
 import android.util.DisplayMetrics;
 import android.util.Log;
 import android.view.SurfaceHolder;
@@ -65,6 +66,26 @@ public class MainActivity extends AppCompatActivity {
             tv.append(supportedPreviewSizes.get(i).width + "x" + supportedPreviewSizes.get(i).height);
             tv.append("\n");
         }
+        tv.append("支持的预览帧范围：\n");
+        List<int[]> supportedPreviewFpsRange = camera.getParameters().getSupportedPreviewFpsRange();
+        for (int i = 0; i < supportedPreviewFpsRange.size(); i++) {
+            int[] size = supportedPreviewFpsRange.get(i);
+            tv.append(size[0] + "x" + size[1] + "\n");
+        }
+        tv.append("当前预览帧范围：\n");
+        int[] actualRange = new int[2];
+        camera.getParameters().getPreviewFpsRange(actualRange);
+        tv.append(actualRange[0] + "x" + actualRange[1] + "\n");
+        tv.append("曝光补偿：" + camera.getParameters().getExposureCompensation());
+        tv.append("曝光补偿：step " + camera.getParameters().getExposureCompensationStep());
+        List<Camera.Size> supportedPictureSizes = camera.getParameters().getSupportedPictureSizes();
+        tv.append("\n支持拍照分辨率:\n");
+        for (int i = 0; i < supportedPictureSizes.size(); i++) {
+            tv.append(supportedPictureSizes.get(i).width + "x" + supportedPictureSizes.get(i).height);
+            tv.append("\n");
+        }
+        tv.append("是否支持自动给对焦：" + camera.getParameters().isSmoothZoomSupported());
+        tv.setMovementMethod(new ScrollingMovementMethod());
     }
 
     private void openCamera() {
@@ -116,8 +137,9 @@ public class MainActivity extends AppCompatActivity {
                 else if (rotation == 270) rotation = 90;
             }
             parameters.setRotation(rotation);//生成的图片转90°
+            parameters.setWhiteBalance(Camera.Parameters.WHITE_BALANCE_AUTO);
             //预览图片旋转90°
-            camera.setDisplayOrientation(0);//预览转90°
+            camera.setDisplayOrientation(90);//预览转90°
 //            parameters.setPreviewSize(720, 720);
             camera.setParameters(parameters);
         }
