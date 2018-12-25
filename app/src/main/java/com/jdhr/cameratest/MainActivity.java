@@ -57,6 +57,7 @@ public class MainActivity extends AppCompatActivity {
     }
 
     private void showCameraInfo(TextView tv) {
+        tv.setMovementMethod(new ScrollingMovementMethod());
         tv.setText("cameraId = " + cameraId);
         Camera.CameraInfo cameraInfo = new Camera.CameraInfo();
         tv.append("orientation = " + cameraInfo.orientation + "\n");
@@ -84,8 +85,12 @@ public class MainActivity extends AppCompatActivity {
             tv.append(supportedPictureSizes.get(i).width + "x" + supportedPictureSizes.get(i).height);
             tv.append("\n");
         }
-        tv.append("是否支持自动给对焦：" + camera.getParameters().isSmoothZoomSupported());
-        tv.setMovementMethod(new ScrollingMovementMethod());
+        tv.append("是否支持自动给对焦：" + camera.getParameters().isSmoothZoomSupported() + "\n");
+        tv.append("支持的对焦模式：\n");
+        List<String> supportedFocusModes = camera.getParameters().getSupportedFocusModes();
+        for (int i = 0; i < supportedFocusModes.size(); i++) {
+            tv.append(supportedFocusModes.get(i) + "\n");
+        }
     }
 
     private void openCamera() {
@@ -96,6 +101,17 @@ public class MainActivity extends AppCompatActivity {
             updateCameraOrientation();
             camera.setPreviewDisplay(surfaceHolder);
             camera.startPreview();
+            //实现自动对焦
+//            camera.autoFocus(new Camera.AutoFocusCallback() {
+//                @Override
+//                public void onAutoFocus(boolean success, Camera camera) {
+//                    if (success) {
+//                        openCamera();//实现相机的参数初始化
+//                    }
+//                }
+//
+//            });
+            camera.cancelAutoFocus();
 //            camera.startFaceDetection();
         } catch (IOException e) {
             e.printStackTrace();
@@ -138,6 +154,7 @@ public class MainActivity extends AppCompatActivity {
             }
             parameters.setRotation(rotation);//生成的图片转90°
             parameters.setWhiteBalance(Camera.Parameters.WHITE_BALANCE_AUTO);
+            parameters.setFocusMode(Camera.Parameters.FOCUS_MODE_CONTINUOUS_PICTURE);//1连续对焦
             //预览图片旋转90°
             camera.setDisplayOrientation(90);//预览转90°
 //            parameters.setPreviewSize(720, 720);
